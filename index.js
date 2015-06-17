@@ -10,13 +10,21 @@ client.auth(redisURL.auth.split(":")[1]);
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
+var json = {
+	name: 'KUGL', 
+	color: 'calm', 
+	title: 'HERR VOGEL @ Club der Traumtänzer', 
+	link: 'http://www.kugl.ch/',
+	description: 'Deephouse, Techno / 18+ / 23:00-06:00 / Nur 15chf Eintritt'
+};
+
 app.get('/', function(request, response) {
-  client.set("foo","bar", function(err) {
+  client.hmset("kugl",JSON.stringify(json), function(err) {
         if (err) {
            // Something went wrong
            console.error("error");
         } else {
-            client.get("foo", function(err, value) {
+            client.hmget("foo", function(err, value) {
                  if (err) {
                      console.error("error");
                  } else {
