@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "express": "~4.9.x",
-    "redis": "0.12.x"
+    "redis": "0.12.x",
+    "cron": "1.0.x",
+    "crawler": "0.4.x"
   },
   "engines": {
     "node": "0.12.2"
