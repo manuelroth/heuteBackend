@@ -36,15 +36,14 @@ job.start();
 
 app.get('/', function(request, response) {
   var venues = {};
-  client.hgetall('venue', function(err, value) {
+  client.hgetall('venues', function(err, value) {
        if (err) {
            console.error('Error: Couldnt read venues off redit');
        } else {
          venues = value;
-           console.log('Successfully read: ' + JSON.stringify(value));
+         console.log('Successfully read: ' + JSON.stringify(value));
        }
-  });
-  response.json(venues);
+  }).then(response.json(venues));
 });
 
 function crawl() {
