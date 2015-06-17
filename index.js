@@ -1,6 +1,7 @@
 var express = require('express');
 var redis = require('redis');
 var url = require('url');
+var moment = require('moment');
 var CronJob = require('cron').CronJob;
 var Crawler = require('crawler');
 var app = express();
@@ -24,7 +25,7 @@ var job = new CronJob({
            // Something went wrong
            console.error('Error: Couldnt write venues to redit');
         } else {
-           console.error('Successfully written: '+ Date.now());
+           console.log('Successfully written: '+ moment().format('MMMM Do YYYY, h:mm:ss a') + ' ' + JSON.stringify(venues));
         }
     });
   },
@@ -40,7 +41,7 @@ app.get('/', function(request, response) {
            console.error('Error: Couldnt read venues off redit');
        } else {
          venues = value;
-           console.log('Successfully read: ' + value.toString());
+           console.log('Successfully read: ' + JSON.stringify(value));
        }
   });
   response.json(venues);
