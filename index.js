@@ -5,16 +5,16 @@ var CronJob = require('cron').CronJob;
 var Crawler = require('crawler');
 var app = express();
 
-var redisURL = url.parse(process.env.REDIS_URL);
+/*var redisURL = url.parse(process.env.REDIS_URL);
 var client = redis.createClient(redisURL.port, redisURL.hostname);
-client.auth(redisURL.auth.split(":")[1]);
+client.auth(redisURL.auth.split(":")[1]);*/
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
 
 var job = new CronJob({
-  cronTime: '* * * * * *',
+  cronTime: '0 * * * * *',
   onTick: function() {
     // Runs every weekday at 00:01:00 AM.
     crawl();
@@ -51,6 +51,14 @@ app.get('/', function(request, response) {
 });
 
 function crawl() {
+  var json = {
+  	name: 'KUGL', 
+  	color: 'calm', 
+  	title: 'HERR VOGEL @ Club der Traumtänzer', 
+  	link: 'http://www.kugl.ch/',
+  	description: 'Deephouse, Techno / 18+ / 23:00-06:00 / Nur 15chf Eintritt'
+  };
+  var event = {};
   var c = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page 
@@ -61,11 +69,11 @@ function crawl() {
             var toQueueUrl = $(a).attr('href');
             c.queue(toQueueUrl);
         });*/
-        console.log($('title'), ': ',result.body.length, 'bytes');
+        console.log($('head > title').text(), ': ',result.body.length, 'bytes');
     }
   });
   
-  c.queue(['http://www.kugl.ch/', 'http://www.grabenhalle.ch/']);
+  c.queue(['http://www.kugl.ch/', 'http://www.grabenhalle.ch']);
 }
 
 app.listen(app.get('port'), function() {
