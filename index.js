@@ -15,7 +15,7 @@ app.use(express.static(__dirname + '/public'));
 
 
 var job = new CronJob({
-  cronTime: '* * * * * *',
+  cronTime: '0 0 * * * *',
   onTick: function() {
     // Runs every weekday at 00:01:00 AM.
     
@@ -43,7 +43,8 @@ app.get('/', function(request, response) {
          venues = value;
          console.log('Successfully read: ' + JSON.stringify(value));
        }
-  }).then(response.json(venues));
+  });
+  response.json(venues);
 });
 
 function crawl() {
