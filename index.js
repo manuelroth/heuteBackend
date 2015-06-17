@@ -7,8 +7,6 @@ var redisURL = url.parse(process.env.REDIS_URL);
 var client = redis.createClient(redisURL.port, redisURL.hostname);
 client.auth(redisURL.auth.split(":")[1]);
 
-
-
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
