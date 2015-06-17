@@ -22,11 +22,11 @@ app.get('/', function(request, response) {
   client.hmset("kugl",JSON.stringify(json), function(err) {
         if (err) {
            // Something went wrong
-           console.error("error");
+           console.error("errorWrite");
         } else {
-            client.hmget("foo", function(err, value) {
+            client.hmget("kugl", function(err, value) {
                  if (err) {
-                     console.error("error");
+                     console.error("errorRead");
                  } else {
                      console.log("Worked: " + value);
                  }
