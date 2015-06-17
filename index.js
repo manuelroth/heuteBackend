@@ -11,13 +11,21 @@ app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(request, response) {
-  var bar = "";
-  client.set('foo', 'bar');
-  client.get('foo', function(err, reply) {
-    bar = reply.toString();
-    console.log(reply.toString());
-  });
-  response.send('Hello World!' + " " + bar);
+  client.set("foo","bar", function(err) {
+        if (err) {
+           // Something went wrong
+           console.error("error");
+        } else {
+            client.get("foo", function(err, value) {
+                 if (err) {
+                     console.error("error");
+                 } else {
+                     console.log("Worked: " + value);
+                 }
+            });
+        }
+    });
+  response.send('Hello World!');
 });
 
 app.listen(app.get('port'), function() {
