@@ -10,25 +10,27 @@ client.auth(redisURL.auth.split(":")[1]);
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
-var json = {
-	name: 'KUGL', 
-	color: 'calm', 
-	title: 'HERR VOGEL @ Club der Traumtänzer', 
-	link: 'http://www.kugl.ch/',
-	description: 'Deephouse, Techno / 18+ / 23:00-06:00 / Nur 15chf Eintritt'
-};
+
 
 app.get('/', function(request, response) {
-  client.hmset("kugl",JSON.stringify(json), function(err) {
+  var json = {
+  	name: 'KUGL', 
+  	color: 'calm', 
+  	title: 'HERR VOGEL @ Club der Traumtänzer', 
+  	link: 'http://www.kugl.ch/',
+  	description: 'Deephouse, Techno / 18+ / 23:00-06:00 / Nur 15chf Eintritt'
+  };
+  
+  client.hmset('venue', json , function(err) {
         if (err) {
            // Something went wrong
-           console.error("errorWrite");
+           console.error('errorWrite');
         } else {
-            client.hmget("kugl", function(err, value) {
+            client.hgetall('venue', function(err, value) {
                  if (err) {
-                     console.error("errorRead");
+                     console.error('errorRead');
                  } else {
-                     console.log("Worked: " + value);
+                     console.log('Worked: ' + value);
                  }
             });
         }
