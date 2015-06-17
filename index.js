@@ -5,19 +5,28 @@ var CronJob = require('cron').CronJob;
 var Crawler = require('crawler');
 var app = express();
 
-/*var redisURL = url.parse(process.env.REDIS_URL);
+var redisURL = url.parse(process.env.REDIS_URL);
 var client = redis.createClient(redisURL.port, redisURL.hostname);
-client.auth(redisURL.auth.split(":")[1]);*/
+client.auth(redisURL.auth.split(":")[1]);
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
 
 
 var job = new CronJob({
-  cronTime: '0 * * * * *',
+  cronTime: '* * * * * *',
   onTick: function() {
     // Runs every weekday at 00:01:00 AM.
-    crawl();
+    
+    var venues = crawl();
+    client.hmset('venues', venues , function(err) {
+        if (err) {
+           // Something went wrong
+           console.error('Error: Couldnt write venues to redit');
+        } else {
+           console.error('Successfully written: '+ Date.now());
+        }
+    });
   },
   start: true,
   timeZone: "Europe/Zurich"
@@ -25,55 +34,79 @@ var job = new CronJob({
 job.start();
 
 app.get('/', function(request, response) {
-  /*var json = {
-  	name: 'KUGL', 
-  	color: 'calm', 
-  	title: 'HERR VOGEL @ Club der Traumtänzer', 
-  	link: 'http://www.kugl.ch/',
-  	description: 'Deephouse, Techno / 18+ / 23:00-06:00 / Nur 15chf Eintritt'
-  };
-  
-  client.hmset('venue', json , function(err) {
-        if (err) {
-           // Something went wrong
-           console.error('errorWrite');
-        } else {
-            client.hgetall('venue', function(err, value) {
-                 if (err) {
-                     console.error('errorRead');
-                 } else {
-                     console.log('Worked: ' + value.toString());
-                 }
-            });
-        }
-    });*/
-  response.send('Hello World!');
+  var venues = {};
+  client.hgetall('venue', function(err, value) {
+       if (err) {
+           console.error('Error: Couldnt read venues off redit');
+       } else {
+         venues = value;
+           console.log('Successfully read: ' + value.toString());
+       }
+  });
+  response.json(venues);
 });
 
 function crawl() {
-  var json = {
-  	name: 'KUGL', 
-  	color: 'calm', 
-  	title: 'HERR VOGEL @ Club der Traumtänzer', 
-  	link: 'http://www.kugl.ch/',
-  	description: 'Deephouse, Techno / 18+ / 23:00-06:00 / Nur 15chf Eintritt'
-  };
-  var event = {};
+  var venues = { palace: {}, grabenhalle: {}, kugl: {}, tankstell: {}, oya: {}, treppenhaus: {}, militaerkantine: {}, talhof: {}, flon: {}};
   var c = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page 
     callback : function (error, result, $) {
-        // $ is Cheerio by default 
-        //a lean implementation of core jQuery designed specifically for the server 
-        /*$('a').each(function(index, a) {
-            var toQueueUrl = $(a).attr('href');
-            c.queue(toQueueUrl);
-        });*/
-        console.log($('head > title').text(), ': ',result.body.length, 'bytes');
+      
     }
   });
   
-  c.queue(['http://www.kugl.ch/', 'http://www.grabenhalle.ch']);
+  
+  c.queue([{
+    uri: 'http://www.palace.sg/',
+    jQuery: true,
+ 
+    // The global callback won't be called 
+    callback: function (error, result, $) {
+        var event = { name: 'PALACE', color: 'stable', title: '', link: '', description: ''};
+        
+        venues.palace = event;
+    }
+  }]);
+  
+  c.queue([{
+    uri: 'http://www.grabenhalle.ch/',
+    jQuery: true,
+ 
+    // The global callback won't be called 
+    callback: function (error, result, $) {
+        var event = { name: 'GRABENHALLE', color: 'positive', title: '', link: '', description: ''};
+        
+        /*$('div#content > table > tbody > tr > td > table:nth-child(1)').filter(function(){
+          var data = $(this).children().first().children().first().children().eq(1).children();
+          event.title = data.eq(5).text();
+          event.link = 'http://www.grabenhalle.ch' + data.eq(5).attr('href');
+          //event.description = data.eq(10).children().first().children().eq(1).children().first().children().first().;
+        });
+        console.log(JSON.stringify(event));*/
+        venues.grabenhalle = event;
+    }
+  }]);
+  
+  c.queue([{
+    uri: 'http://kugl.ch/',
+    jQuery: true,
+    
+    // The global callback won't be called 
+    callback : function (error, result, $) {
+        var event = { name: 'KUGL', color: 'calm', title: '', link: '', description: ''};
+        
+        $('.event-item-holder').filter(function(){
+          var data = $(this).children().first().children().first().children();
+          event.title = data.eq(1).children().first().text();
+          event.link = data.eq(1).children().first().attr('href');
+          event.description = data.eq(2).text();
+        });
+        venues.kugl = event;
+    }
+  }]);
+  
+  return venues;
 }
 
 app.listen(app.get('port'), function() {
