@@ -28,7 +28,7 @@ var job = new CronJob({
 job.start();
 
 app.get('/', function(request, response) {
-  client.hgetall('venues', function(err, value) {
+  client.get('venues', function(err, value) {
        if (err) {
          response.status(404);
          response.send('Error: Couldnt fetch venues off redis');
@@ -36,9 +36,7 @@ app.get('/', function(request, response) {
        } else {
          console.log('Read successfully: ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
          console.log(value);
-         response.writeHead(200, {'content-type': 'text/json' });
-         response.write( JSON.stringify(value) );
-         response.end('\n');
+         response.json(value);
        }
   });
 });
@@ -111,7 +109,6 @@ function filterData(content) {
           venues.data.push({"name": "", "color": "", "title": "", "link": "", "description": ""});
       }
     });
-    console.log(JSON.stringify(venues));
     writeVenues(venues);
 }
 
@@ -131,7 +128,9 @@ function kuglFilter(content) {
 
 function writeVenues(venues) {
   client.del('venues');
-  client.hmset('venues', venues , function(err) {
+  var jsonString = JSON.stringify(venues);
+  console.log(jsonString);
+  client.set('venues', jsonString , function(err) {
         if (err) {
            // Something went wrong
            console.error('Error: Couldnt write venues to redis');
