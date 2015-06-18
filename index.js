@@ -66,7 +66,7 @@ function crawl() {
     callback: function (error, result, $) {
         var event = { "name": "PALACE", "color": "stable", "title": "", "link": "", "description": ""};
         
-        venues.palace = event;
+        venues.palace = JSON.stringify(event);
     }
   }]);
   
@@ -85,7 +85,7 @@ function crawl() {
           event.description = data.eq(10).children().first().children().eq(1).children().first().children().first().;
         });*/
 
-        venues.grabenhalle = event;
+        venues.grabenhalle = JSON.stringify(event);
     }
   }]);
   
@@ -103,7 +103,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });
-        venues.kugl = event;
+        venues.kugl = JSON.stringify(event);
     }
   }]);
   
@@ -121,7 +121,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.tankstell = event;
+        venues.tankstell = JSON.stringify(event);
     }
   }]);
   
@@ -139,7 +139,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.oya = event;
+        venues.oya = JSON.stringify(event);
     }
   }]);
   
@@ -157,7 +157,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.treppenhaus = event;
+        venues.treppenhaus = JSON.stringify(event);
     }
   }]);
   
@@ -175,7 +175,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.militaerkantine = event;
+        venues.militaerkantine = JSON.stringify(event);
     }
   }]);
   
@@ -193,7 +193,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.talhof = event;
+        venues.talhof = JSON.stringify(event);
     }
   }]);
   
@@ -211,7 +211,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.flon = event;
+        venues.flon = JSON.stringify(event);
     }
   }]);
   
