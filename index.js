@@ -25,7 +25,7 @@ var job = new CronJob({
            // Something went wrong
            console.error('Error: Couldnt write venues to redit');
         } else {
-           console.log('Successfully written: '+ moment().zone(60).format('MMMM Do YYYY, h:mm:ss a'));
+           console.log('Successfully written: '+ moment().format('MMMM Do YYYY, h:mm:ss a'));
         }
     });
   },
@@ -35,15 +35,14 @@ var job = new CronJob({
 job.start();
 
 app.get('/', function(request, response) {
-  var venues = client.hgetall('venues', function(err, value) {
+  client.hgetall('venues', function(err, value) {
        if (err) {
            console.error('Error: Couldnt read venues off redit');
        } else {
          console.log('Successfully read: ' + JSON.stringify(value));
-         return value;
+         response.json(value);;
        }
   });
-  response.json(venues);
 });
 
 function crawl() {
