@@ -97,10 +97,10 @@ function filterData(content) {
           venues.data.push({"name": "TREPPENHAUS", "color": "assertive", "title": "", "link": "", "description": ""});
           break;
         case 'http://www.militaerkantine.ch/de/microsites/kultur/':
-          venues.data.push({"name": "MILITÄRKANTINE", "stable": "stable", "title": "", "link": "", "description": ""});
+          venues.data.push({"name": "MILITÄRKANTINE", "color": "stable", "title": "", "link": "", "description": ""});
           break;
         case 'http://talhof.sg/':
-          venues.data.push({"name": "TALHOF", "balanced": "balanced", "title": "", "link": "", "description": ""});
+          venues.data.push({"name": "TALHOF", "color": "balanced", "title": "", "link": "", "description": ""});
           break;
         case 'http://www.flon-sg.ch/':
           venues.data.push({"name": "FLON", "color": "royal", "title": "", "link": "", "description": ""});
