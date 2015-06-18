@@ -49,7 +49,7 @@ app.get('/', function(request, response) {
 });
 
 function crawl() {
-  var venues = { palace: {}, grabenhalle: {}, kugl: {}, tankstell: {}, oya: {}, treppenhaus: {}, militaerkantine: {}, talhof: {}, flon: {}};
+  var venues = {};
   var c = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page 
@@ -58,14 +58,13 @@ function crawl() {
     }
   });
   
-  
   c.queue([{
     uri: 'http://www.palace.sg/',
     jQuery: true,
  
     // The global callback won't be called 
     callback: function (error, result, $) {
-        var event = { name: 'PALACE', color: 'stable', title: '', link: '', description: ''};
+        var event = { "name": "PALACE", "color": "stable", "title": "", "link": "", "description": ""};
         
         venues.palace = event;
     }
@@ -77,7 +76,7 @@ function crawl() {
  
     // The global callback won't be called 
     callback: function (error, result, $) {
-        var event = { name: 'GRABENHALLE', color: 'positive', title: '', link: '', description: ''};
+        var event = { "name": "GRABENHALLE", "color": "positive", "title": "", "link": "", "description": ""};
         
         /*$('div#content > table > tbody > tr > td > table:nth-child(1)').filter(function(){
           var data = $(this).children().first().children().first().children().eq(1).children();
@@ -96,7 +95,7 @@ function crawl() {
     
     // The global callback won't be called 
     callback : function (error, result, $) {
-        var event = { name: 'KUGL', color: 'calm', title: '', link: '', description: ''};
+        var event = { "name": "KUGL", "color": "calm", "title": "", "link": "", "description": ""};
         
         $('.event-item-holder').filter(function(){
           var data = $(this).children().first().children().first().children();
@@ -114,7 +113,7 @@ function crawl() {
     
     // The global callback won't be called 
     callback : function (error, result, $) {
-        var event = { name: 'TANKSTELL', color: 'balanced', title: '', link: '', description: ''};
+        var event = { "name": "TANKSTELL", "color": "balanced", "title": "", "link": "", "description": ""};
         
         /*$('.event-item-holder').filter(function(){
           var data = $(this).children().first().children().first().children();
@@ -132,7 +131,7 @@ function crawl() {
     
     // The global callback won't be called 
     callback : function (error, result, $) {
-        var event = { name: 'ØYA', color: 'energized', title: '', link: '', description: ''};
+        var event =  {"name": "ØYA", "color": "energized", "title": "", "link": "", "description": ""};
         
         /*$('.event-item-holder').filter(function(){
           var data = $(this).children().first().children().first().children();
@@ -150,7 +149,7 @@ function crawl() {
     
     // The global callback won't be called 
     callback : function (error, result, $) {
-        var event = { name: 'TREPPENHAUS', color: 'assertive', title: '', link: '', description: ''};
+        var event = {"name": "TREPPENHAUS", "color": "assertive", "title": "", "link": "", "description": ""};
         
         /*$('.event-item-holder').filter(function(){
           var data = $(this).children().first().children().first().children();
@@ -168,7 +167,7 @@ function crawl() {
     
     // The global callback won't be called 
     callback : function (error, result, $) {
-        var event = { name: 'MILITÄRKANTINE', color: 'stable', title: '', link: '', description: ''};
+        var event = {"name": "MILITÄRKANTINE", "stable": "stable", "title": "", "link": "", "description": ""};
         
         /*$('.event-item-holder').filter(function(){
           var data = $(this).children().first().children().first().children();
@@ -186,7 +185,7 @@ function crawl() {
     
     // The global callback won't be called 
     callback : function (error, result, $) {
-        var event = { name: 'TALHOF', color: 'balanced', title: '', link: '', description: ''};
+        var event = {"name": "TALHOF", "balanced": "balanced", "title": "", "link": "", "description": ""};
         
         /*$('.event-item-holder').filter(function(){
           var data = $(this).children().first().children().first().children();
@@ -204,7 +203,7 @@ function crawl() {
     
     // The global callback won't be called 
     callback : function (error, result, $) {
-        var event = { name: 'FLON', color: 'royal', title: '', link: '', description: ''};
+        var event = {"name": "FLON", "royal": "royal", "title": "", "link": "", "description": ""};
         
         /*$('.event-item-holder').filter(function(){
           var data = $(this).children().first().children().first().children();
