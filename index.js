@@ -21,7 +21,6 @@ var job = new CronJob({
     // Runs every weekday at 00:01:00 AM.
     
     var venues = crawl();
-    console.log(venues);
     client.hmset('venues', venues , function(err) {
         if (err) {
            // Something went wrong
@@ -45,13 +44,13 @@ app.get('/', function(request, response) {
        } else {
          console.log('Successfully read: ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
          console.log(value);
-         response.send(JSON.stringify(value));
+         response.json(value);
        }
   });
 });
 
 function crawl() {
-  var venues = {};
+  var venues = { "data" : [] };
   var c = new Crawler({
     maxConnections : 10,
     // This will be called for each crawled page 
@@ -68,7 +67,7 @@ function crawl() {
     callback: function (error, result, $) {
         var event = { "name": "PALACE", "color": "stable", "title": "", "link": "", "description": ""};
         
-        venues.palace = event;
+        venues.data.push(event);
     }
   }]);
   
@@ -87,7 +86,7 @@ function crawl() {
           event.description = data.eq(10).children().first().children().eq(1).children().first().children().first().;
         });*/
 
-        venues.grabenhalle = event;
+        venues.data.push(event);
     }
   }]);
   
@@ -105,7 +104,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });
-        venues.kugl = event;
+        venues.data.push(event);
     }
   }]);
   
@@ -123,7 +122,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.tankstell = event;
+        venues.data.push(event);
     }
   }]);
   
@@ -141,7 +140,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.oya = event;
+        venues.data.push(event);
     }
   }]);
   
@@ -159,7 +158,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.treppenhaus = event;
+        venues.data.push(event);
     }
   }]);
   
@@ -177,7 +176,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.militaerkantine = event;
+        venues.data.push(event);
     }
   }]);
   
@@ -195,7 +194,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.talhof = event;
+        venues.data.push(event);
     }
   }]);
   
@@ -213,7 +212,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.flon = event;
+        venues.data.push(event);
     }
   }]);
   
