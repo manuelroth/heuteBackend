@@ -4,6 +4,7 @@ var url = require('url');
 var moment = require('moment');
 var CronJob = require('cron').CronJob;
 var Crawler = require('crawler');
+var cors = require('cors');
 var app = express();
 
 var redisURL = url.parse(process.env.REDIS_URL);
@@ -12,7 +13,7 @@ client.auth(redisURL.auth.split(":")[1]);
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
-
+app.use(cors());
 
 var job = new CronJob({
   cronTime: '0 * * * * *',
