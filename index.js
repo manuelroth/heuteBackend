@@ -37,7 +37,9 @@ job.start();
 app.get('/', function(request, response) {
   client.hgetall('venues', function(err, value) {
        if (err) {
-           console.error('Error: Couldnt read venues off redit');
+           response.status(404);
+           response.send('Error: Couldnt fetch venues off redit')
+           console.error('Error: Couldnt fetch venues off redit');
        } else {
          console.log('Successfully read: ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
          response.json(value);;
