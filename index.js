@@ -36,7 +36,9 @@ app.get('/', function(request, response) {
        } else {
          console.log('Read successfully: ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
          console.log(value);
-         response.json(value);
+         response.writeHead(200, {'content-type': 'text/json' });
+         response.write( JSON.stringify(value) );
+         response.end('\n');
        }
   });
 });
