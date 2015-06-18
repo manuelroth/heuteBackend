@@ -15,7 +15,7 @@ app.use(express.static(__dirname + '/public'));
 
 
 var job = new CronJob({
-  cronTime: '0 0 * * * *',
+  cronTime: '* * * * * *',
   onTick: function() {
     // Runs every weekday at 00:01:00 AM.
     
@@ -25,7 +25,7 @@ var job = new CronJob({
            // Something went wrong
            console.error('Error: Couldnt write venues to redit');
         } else {
-           console.log('Successfully written: '+ moment().format('MMMM Do YYYY, h:mm:ss a') + ' ' + JSON.stringify(venues));
+           console.log('Successfully written: '+ moment().zone(60).format('MMMM Do YYYY, h:mm:ss a'));
         }
     });
   },
@@ -35,13 +35,12 @@ var job = new CronJob({
 job.start();
 
 app.get('/', function(request, response) {
-  var venues = {};
-  client.hgetall('venues', function(err, value) {
+  var venues = client.hgetall('venues', function(err, value) {
        if (err) {
            console.error('Error: Couldnt read venues off redit');
        } else {
-         venues = value;
          console.log('Successfully read: ' + JSON.stringify(value));
+         return value;
        }
   });
   response.json(venues);
