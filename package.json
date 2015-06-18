@@ -10,9 +10,10 @@
     "express": "~4.9.x",
     "redis": "0.12.x",
     "cron": "1.0.x",
-    "crawler": "0.4.x",
+    "krawler": "0.3.x",
     "moment": "2.10.x",
-    "cors": "2.7.x"
+    "cors": "2.7.x",
+    "cheerio": "0.19.x"
   },
   "engines": {
     "node": "0.12.2"
