@@ -21,10 +21,11 @@ var job = new CronJob({
     // Runs every weekday at 00:01:00 AM.
     
     var venues = crawl();
+    console.log(venues);
     client.hmset('venues', venues , function(err) {
         if (err) {
            // Something went wrong
-           console.error('Error: Couldnt write venues to redit');
+           console.error('Error: Couldnt write venues to redis');
         } else {
            console.log('Successfully written: '+ moment().format('MMMM Do YYYY, h:mm:ss a'));
         }
@@ -39,11 +40,12 @@ app.get('/', function(request, response) {
   client.hgetall('venues', function(err, value) {
        if (err) {
            response.status(404);
-           response.send('Error: Couldnt fetch venues off redit')
-           console.error('Error: Couldnt fetch venues off redit');
+           response.send('Error: Couldnt fetch venues off redis')
+           console.error('Error: Couldnt fetch venues off redis');
        } else {
          console.log('Successfully read: ' + moment().format('MMMM Do YYYY, h:mm:ss a'));
-         response.json(value);;
+         console.log(value);
+         response.send(JSON.stringify(value));
        }
   });
 });
@@ -66,7 +68,7 @@ function crawl() {
     callback: function (error, result, $) {
         var event = { "name": "PALACE", "color": "stable", "title": "", "link": "", "description": ""};
         
-        venues.palace = JSON.stringify(event);
+        venues.palace = event;
     }
   }]);
   
@@ -85,7 +87,7 @@ function crawl() {
           event.description = data.eq(10).children().first().children().eq(1).children().first().children().first().;
         });*/
 
-        venues.grabenhalle = JSON.stringify(event);
+        venues.grabenhalle = event;
     }
   }]);
   
@@ -103,7 +105,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });
-        venues.kugl = JSON.stringify(event);
+        venues.kugl = event;
     }
   }]);
   
@@ -121,7 +123,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.tankstell = JSON.stringify(event);
+        venues.tankstell = event;
     }
   }]);
   
@@ -139,7 +141,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.oya = JSON.stringify(event);
+        venues.oya = event;
     }
   }]);
   
@@ -157,7 +159,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.treppenhaus = JSON.stringify(event);
+        venues.treppenhaus = event;
     }
   }]);
   
@@ -175,7 +177,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.militaerkantine = JSON.stringify(event);
+        venues.militaerkantine = event;
     }
   }]);
   
@@ -193,7 +195,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.talhof = JSON.stringify(event);
+        venues.talhof = event;
     }
   }]);
   
@@ -211,7 +213,7 @@ function crawl() {
           event.link = data.eq(1).children().first().attr('href');
           event.description = data.eq(2).text();
         });*/
-        venues.flon = JSON.stringify(event);
+        venues.flon = event;
     }
   }]);
   
