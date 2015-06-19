@@ -75,35 +75,34 @@ function crawl() {
 
 function filterData(content) {
     var venues = { "data" : [] };
-    console.log(content.length);
     content.forEach(function(entry) {
       switch(entry.url) {
         case 'http://www.palace.sg/':
           venues.data.push({ "name": "PALACE", "color": "stable", "title": "", "link": "", "description": ""});
           break;
         case 'http://grabenhalle.ch/':
-          venues.data.push({ "name": "GRABENHALLE", "color": "positive", "title": "", "link": "", "description": ""});
+          venues.data.push(grabenFilter(entry.body));
           break;
         case 'http://kugl.ch/':
           venues.data.push(kuglFilter(entry.body));
           break;
         case 'http://tankstell.ch/':
-          venues.data.push({ "name": "TANKSTELL", "color": "balanced", "title": "", "link": "", "description": ""});
+          venues.data.push(tankstellFilter(entry.body));
           break;
         case 'http://oya-bar.ch/':
-          venues.data.push({"name": "ØYA", "color": "energized", "title": "", "link": "", "description": ""});
+          venues.data.push(oyaFilter(entry.body));
           break;
         case 'http://treppenhaus.ch/':
-          venues.data.push({"name": "TREPPENHAUS", "color": "assertive", "title": "", "link": "", "description": ""});
+          venues.data.push(treppenhausFilter(entry.body));
           break;
         case 'http://www.militaerkantine.ch/de/microsites/kultur/':
-          venues.data.push({"name": "MILITÄRKANTINE", "color": "stable", "title": "", "link": "", "description": ""});
+          venues.data.push(militaerkantineFilter(entry.body));
           break;
         case 'http://talhof.sg/':
-          venues.data.push({"name": "TALHOF", "color": "balanced", "title": "", "link": "", "description": ""});
+          venues.data.push(talhofFilter(entry.body));
           break;
         case 'http://www.flon-sg.ch/':
-          venues.data.push({"name": "FLON", "color": "royal", "title": "", "link": "", "description": ""});
+          venues.data.push(flonFilter(entry.body));
           break;
         default:
           venues.data.push({"name": "", "color": "", "title": "", "link": "", "description": ""});
@@ -112,19 +111,201 @@ function filterData(content) {
     writeVenues(venues);
 }
 
-function kuglFilter(content) {
+function flonFilter(content) {
   var $ = cheerio.load(content);
-  var event = { "name": "KUGL", "color": "calm", "title": "", "link": "", "description": ""};
-  $('.event-item-holder').filter(function(){
-    var data = $(this).children().first().children().first().children();
-    event.title = data.eq(1).children().first().text();
-    event.link = data.eq(1).children().first().attr('href');
-    event.description = data.eq(2).text();
-  });
-  
+  var event = { "name": "FLON", "color": "royal", "title": "Keine Veranstaltung", "link": "http://talhof.sg/", "description": ""};
+  if(content !== ""){
+    $('#events').filter(function(){
+  	  var data = $(this).children().first();
+      var infos = data.children().first().text();
+      var eventDate = infos.match(/\d{1,}\.\d{1,}\.\d{1,}/)[0];
+      var actualDate = moment().locale('de').format("L");
+      if(eventDate === actualDate) {
+        event.title = data.children().eq(1).children().first().text();
+        event.link = "http://talhof.sg" + data.children().eq(1).children().first().attr('href');
+        //todo description anpassen
+        event.description = data.children().eq(2).text();
+      } else {
+        event.link = "http://talhof.sg/";
+        event.title = "Keine Veranstaltung";
+      }
+    });
+  }
   return event;
 }
 
+function talhofFilter(content) {
+  var $ = cheerio.load(content);
+  var event = { "name": "TALHOF", "color": "balanced", "title": "Keine Veranstaltung", "link": "http://talhof.sg/", "description": ""};
+  if(content !== ""){
+    $('#events').filter(function(){
+  	  var data = $(this).children().first();
+      var infos = data.children().first().text();
+      var eventDate = infos.match(/\d{1,}\.\d{1,}\.\d{1,}/)[0];
+      var actualDate = moment().locale('de').format("L");
+      if(eventDate === actualDate) {
+        event.title = data.children().eq(1).children().first().text();
+        event.link = "http://talhof.sg" + data.children().eq(1).children().first().attr('href');
+        //todo description anpassen
+        event.description = data.children().eq(2).text();
+      } else {
+        event.link = "http://talhof.sg/";
+        event.title = "Keine Veranstaltung";
+      }
+    });
+  }
+  return event;
+}
+
+function militaerkantineFilter(content) {
+  var $ = cheerio.load(content);
+  var event = { "name": "MILITÄRKANTINE", "color": "stable", "title": "Keine Veranstaltung", "link": "http://www.militaerkantine.ch/de/microsites/kultur/", "description": ""};
+  if(content !== ""){
+    $('#infoseite').filter(function(){
+  	  var data = $(this).children().eq(1);
+      var infos = data.children().eq(1).children().first().text();
+      var eventDate = infos.match(/\d{2}\.\s\w{1,}\s\d{4}/i)[0];
+      var actualDate = moment().locale('de').format("LL");
+      event.link = "http://www.militaerkantine.ch/de/microsites/kultur/";
+      if(eventDate === actualDate) {
+        event.title = data.children().eq(2).children().first().text();
+        event.description = infos.replace(/\w{2},\s\d{2}\.\s\w{1,}\s\d{4}/, '').trim();
+      } else {
+        event.title = "Keine Veranstaltung";
+      }
+    });
+  }
+  return event;
+}
+
+function treppenhausFilter(content) {
+  var $ = cheerio.load(content);
+  var event = { "name": "TREPPENHAUS", "color": "assertive", "title": "Keine Veranstaltung", "link": "http://treppenhaus.ch/", "description": ""};
+  if(content !== ""){
+    $('main.content').filter(function(){
+  	  var data = $(this).children().eq(2).children().first();
+      var day = data.children().first().children().eq(1).children().first().text() + ". ";
+      var month = $(this).children().eq(1).text().replace(':', '') + " ";
+      var year = moment().format("YYYY");
+      var eventDate = day + month + year;
+      var actualDate = moment().locale('de').format("LL");
+      if(eventDate === actualDate) {
+        event.title = data.children().eq(1).children().eq(1).children().first().html().trim();
+        event.link = data.attr('href');
+        //todo description anpassen
+        event.description = "";
+      } else {
+        event.link = "http://treppenhaus.ch/";
+        event.title = "Keine Veranstaltung";
+      }
+    });
+  }
+  return event;
+}
+
+function kuglFilter(content) {
+  var $ = cheerio.load(content);
+  var event = { "name": "KUGL", "color": "calm", "title": "Keine Veranstaltung", "link": "http://kugl.ch/", "description": ""};
+  if(content !== ""){
+    $('.event-item-holder').filter(function(){
+      var data = $(this).children().first().children().first().children();
+      var day = data.first().children().eq(1).text();
+      var month = data.first().children().eq(3).text();
+      var year = moment().format("YYYY");
+      var eventDate = month + " " + day + ", " + year;
+      var actualDate = moment().format("ll");
+      if(eventDate === actualDate) {
+        event.title = data.eq(1).children().first().text();
+        event.link = data.eq(1).children().first().attr('href');
+        event.description = data.eq(2).text();
+      } else {
+        event.link = "http://kugl.ch/";
+        event.title = "Keine Veranstaltung";
+      }
+    });
+  }
+  return event;
+}
+
+function grabenFilter(content) {
+  var $ = cheerio.load(content);
+  var event = { "name": "GRABENHALLE", "color": "positive", "title": "Keine Veranstaltung", "link": "http://grabenhalle.ch/", "description": ""};
+  if(content !== ""){
+    $('#content').filter(function(){
+      var data = $(this).children().eq(2).children().first().children().first().children().first().children().first().children().eq(1).children();
+      var infos = data.first().text();
+      var eventDate = infos.match(/\d{1,}\.\s\w{1,}/i)[0] + " " + moment().format("YYYY");
+      var actualDate = moment().locale('de').format("LL");
+      if(eventDate === actualDate) {
+        event.title = data.eq(5).children().first().text();
+        event.link = "http://grabenhalle.ch" + data.eq(5).attr('href');
+        var descriptionTable = data.find('table').first().children();
+        var description = descriptionTable.first().children().first().text();
+        description += " " + descriptionTable.first().children().eq(1).text();
+        description += " " + descriptionTable.eq(1).children().first().text();
+        description += " " + descriptionTable.eq(1).children().eq(1).text();
+        description += " " + descriptionTable.eq(2).children().first().text();
+        description += " " + descriptionTable.eq(2).children().eq(1).text();
+        event.description = description;
+      } else {
+        event.link = "http://grabenhalle.ch/";
+        event.title = "Keine Veranstaltung";
+      }
+    });
+  }
+  return event;
+}
+
+function tankstellFilter(content) {
+  var $ = cheerio.load(content);
+  var event = { "name": "TANKSTELL", "color": "balanced", "title": "Keine Veranstaltung", "link": "http://treppenhaus.ch/", "description": ""};
+  if(content !== ""){
+    $('#content').filter(function(){
+      var data = $(this).children().first();
+      var infos = data.children().first().text();
+      var array = infos.match(/\|\s.{1,}\|/i);
+      var replace1 = array[0].replace('| ','');
+      var eventDate = replace1.replace(' |', '');
+      var actualDate = moment().locale('de').format("LL");
+      event.link = "http://tankstell.ch/";
+      if(eventDate === actualDate) {
+        event.title = data.children().eq(1).text();
+        var description = infos.match(/\|\s\d{4}.{1,}/i)[0].slice(2);
+        event.description = description;
+      } else {
+        event.link = "http://treppenhaus.ch/";
+        event.title = "Keine Veranstaltung";
+      }
+    });
+  }
+  return event;
+}
+
+function oyaFilter(content) {
+  var $ = cheerio.load(content);
+  var event = { "name": "ØYA", "color": "energized", "title": "Keine Veranstaltung", "link": "http://oya-bar.ch/", "description": ""};
+  if(content !== ""){
+    $('#events_container').filter(function(){
+      var data = $(this).children().first().children();
+      var day = data.eq(1).children().eq(1).children().eq(1).text();
+      var month = data.eq(1).children().eq(2).children().eq(1).text();
+      var year = moment().format("YYYY");
+      var eventDate = day + month + year;
+      console.log("eventDate: " + eventDate);
+      var actualDate = moment().locale('de').format("LL");
+      console.log("actualDate: " + actualDate);
+      if(eventDate === actualDate) {
+        event.title = data.children().eq(2).children().first().text();
+        event.link = "http://oya-bar.ch/" + data.children().eq(2).children().first().attr('href');
+        event.description = data.eq(1).children().eq(3).children().eq(1).text() + "Uhr";
+      } else {
+        event.link = "http://oya-bar.ch/";
+        event.title = "Keine Veranstaltung";
+      }
+    });
+  }
+  return event;
+}
 
 function writeVenues(venues) {
   client.del('venues');
