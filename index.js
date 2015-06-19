@@ -84,31 +84,31 @@ function filterData(content) {
     content.forEach(function(entry) {
       switch(entry.url) {
         case 'http://www.palace.sg/':
-          venues.data[0]({ "name": "PALACE", "color": "stable", "title": "Keine Veranstaltung", "link": "http://www.palace.sg/", "description": ""});
+          venues.data[0] = { "name": "PALACE", "color": "stable", "title": "Keine Veranstaltung", "link": "http://www.palace.sg/", "description": ""};
           break;
         case 'http://grabenhalle.ch/':
-          venues.data[1](grabenFilter(entry.body));
+          venues.data[1] = grabenFilter(entry.body);
           break;
         case 'http://kugl.ch/':
-          venues.data[2](kuglFilter(entry.body));
+          venues.data[2] = kuglFilter(entry.body);
           break;
         case 'http://tankstell.ch/':
-          venues.data[3](tankstellFilter(entry.body));
+          venues.data[3] = tankstellFilter(entry.body);
           break;
         case 'http://oya-bar.ch/':
-          venues.data[4](oyaFilter(entry.body));
+          venues.data[4] = oyaFilter(entry.body);
           break;
         case 'http://treppenhaus.ch/':
-          venues.data[5](treppenhausFilter(entry.body));
+          venues.data[5] = treppenhausFilter(entry.body);
           break;
         case 'http://www.militaerkantine.ch/de/microsites/kultur/':
-          venues.data[6](militaerkantineFilter(entry.body));
+          venues.data[6] = militaerkantineFilter(entry.body);
           break;
         case 'http://talhof.sg/':
-          venues.data[7](talhofFilter(entry.body));
+          venues.data[7] = talhofFilter(entry.body);
           break;
         case 'http://www.flon-sg.ch/':
-          venues.data[8](flonFilter(entry.body));
+          venues.data[8] = flonFilter(entry.body);
           break;
         default:
           venues.data.push({"name": "", "color": "", "title": "", "link": "", "description": ""});
