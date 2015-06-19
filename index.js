@@ -56,7 +56,12 @@ function crawl() {
     'http://www.flon-sg.ch/'
     ];
      
-    var krawler = new Krawler;
+    var krawler = new Krawler({
+      maxConnections: 10,
+      headers: {
+        'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36'
+      }
+    });
      
     krawler
         .queue(urls)
@@ -66,6 +71,7 @@ function crawl() {
         })
         .on('error', function(err, url) {
           console.log("Error crawl: " + url);
+          console.log(err);
           content.push({"url": url, "body": ""});
         })
         .on('end', function() {
@@ -287,17 +293,13 @@ function oyaFilter(content) {
   if(content !== ""){
     $('#events_container').filter(function(){
       var data = $(this).children().first().children();
-      var day = data.eq(1).children().eq(1).children().eq(1).text();
-      var month = data.eq(1).children().eq(2).children().eq(1).text();
-      var year = moment().format("YYYY");
-      var eventDate = day + month + year;
-      console.log("eventDate: " + eventDate);
+      var infos = data.eq(1).text();
+      var eventDate = infos.match(/\d{2}\.\s\w{1,}/i)[0] + " " + moment().format("YYYY");
       var actualDate = moment().locale('de').format("LL");
-      console.log("actualDate: " + actualDate);
       if(eventDate === actualDate) {
-        event.title = data.children().eq(2).children().first().text();
-        event.link = "http://oya-bar.ch/" + data.children().eq(2).children().first().attr('href');
-        event.description = data.eq(1).children().eq(3).children().eq(1).text() + "Uhr";
+        event.link = "http://oya-bar.ch/" + data.eq(2).children().first().attr('href');
+        event.title = data.eq(2).children().first().text();
+        event.description = infos.match(/\d{2}\:\d{2}/i) + " Uhr";
       } else {
         event.link = "http://oya-bar.ch/";
         event.title = "Keine Veranstaltung";
