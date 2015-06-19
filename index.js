@@ -69,7 +69,7 @@ function crawl() {
           content.push({"url": url, "body": ""});
         })
         .on('end', function() {
-            filterData(content);
+          filterData(content);
         });
 }
 
@@ -78,31 +78,31 @@ function filterData(content) {
     content.forEach(function(entry) {
       switch(entry.url) {
         case 'http://www.palace.sg/':
-          venues.data.push({ "name": "PALACE", "color": "stable", "title": "", "link": "", "description": ""});
+          venues.data[0]({ "name": "PALACE", "color": "stable", "title": "Keine Veranstaltung", "link": "http://www.palace.sg/", "description": ""});
           break;
         case 'http://grabenhalle.ch/':
-          venues.data.push(grabenFilter(entry.body));
+          venues.data[1](grabenFilter(entry.body));
           break;
         case 'http://kugl.ch/':
-          venues.data.push(kuglFilter(entry.body));
+          venues.data[2](kuglFilter(entry.body));
           break;
         case 'http://tankstell.ch/':
-          venues.data.push(tankstellFilter(entry.body));
+          venues.data[3](tankstellFilter(entry.body));
           break;
         case 'http://oya-bar.ch/':
-          venues.data.push(oyaFilter(entry.body));
+          venues.data[4](oyaFilter(entry.body));
           break;
         case 'http://treppenhaus.ch/':
-          venues.data.push(treppenhausFilter(entry.body));
+          venues.data[5](treppenhausFilter(entry.body));
           break;
         case 'http://www.militaerkantine.ch/de/microsites/kultur/':
-          venues.data.push(militaerkantineFilter(entry.body));
+          venues.data[6](militaerkantineFilter(entry.body));
           break;
         case 'http://talhof.sg/':
-          venues.data.push(talhofFilter(entry.body));
+          venues.data[7](talhofFilter(entry.body));
           break;
         case 'http://www.flon-sg.ch/':
-          venues.data.push(flonFilter(entry.body));
+          venues.data[8](flonFilter(entry.body));
           break;
         default:
           venues.data.push({"name": "", "color": "", "title": "", "link": "", "description": ""});
@@ -190,7 +190,7 @@ function treppenhausFilter(content) {
       var eventDate = day + month + year;
       var actualDate = moment().locale('de').format("LL");
       if(eventDate === actualDate) {
-        event.title = data.children().eq(1).children().eq(1).children().first().html().trim();
+        event.title = data.children().eq(1).children().eq(1).children().first().text().trim();
         event.link = data.attr('href');
         //todo description anpassen
         event.description = "";
