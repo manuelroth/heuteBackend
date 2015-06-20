@@ -17,7 +17,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(cors());
 
 var job = new CronJob({
-  cronTime: '0 * * * * *',
+  cronTime: '0 0 0 * * *',
   onTick: function() {
     // Runs every weekday at 00:01:00 AM.
    crawl();
@@ -110,8 +110,6 @@ function filterData(content) {
         case 'http://www.flon-sg.ch/':
           venues.data[8] = flonFilter(entry.body);
           break;
-        default:
-          venues.data.push({"name": "", "color": "", "title": "", "link": "", "description": ""});
       }
     });
     writeVenues(venues);
@@ -119,7 +117,7 @@ function filterData(content) {
 
 function flonFilter(content) {
   var $ = cheerio.load(content);
-  var event = { "name": "FLON", "color": "royal", "title": "Keine Veranstaltung", "link": "http://talhof.sg/", "description": ""};
+  var event = { "name": "FLON", "color": "royal", "title": "Keine Veranstaltung", "link": "http://www.flon-sg.ch/", "description": ""};
   if(content !== ""){
     $('#events').filter(function(){
   	  var data = $(this).children().first();
@@ -128,11 +126,11 @@ function flonFilter(content) {
       var actualDate = moment().locale('de').format("L");
       if(eventDate === actualDate) {
         event.title = data.children().eq(1).children().first().text();
-        event.link = "http://talhof.sg" + data.children().eq(1).children().first().attr('href');
+        event.link = "http://www.flon-sg.ch/" + data.children().eq(1).children().first().attr('href');
         //todo description anpassen
         event.description = data.children().eq(2).text();
       } else {
-        event.link = "http://talhof.sg/";
+        event.link = "http://www.flon-sg.ch/";
         event.title = "Keine Veranstaltung";
       }
     });
