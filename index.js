@@ -58,6 +58,7 @@ function crawl() {
      
     var krawler = new Krawler({
       maxConnections: 10,
+      forceUTF8: true,
       headers: {
         'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36'
       }
