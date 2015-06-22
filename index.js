@@ -17,7 +17,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(cors());
 
 var job = new CronJob({
-  cronTime: '00 * * * * *',
+  cronTime: '00 01 00 * * *',
   onTick: function() {
     // Runs every weekday at 00:01:00 AM.
    crawl();
